@@ -3,8 +3,6 @@ using Azure.Identity;
 using Microsoft.Web.Hosting.Identity;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace MSIDemo;
 
@@ -19,6 +17,9 @@ static partial class Program
     static string client_id = "0ca5c5b9-0fb7-421d-a831-1596ac8d5ce3";
     static string tokenUriByClient = $"{IMDSEndpoint}metadata/identity/oauth2/token?api-version=2018-02-01&resource={StorageResourceUrl}&client_id={client_id}";
 
+    // Token valid for 24 hours
+    // VMSS will refresh token every 1 hour (if failed, old token is used during retry)
+    // See: https://eng.ms/docs/cloud-ai-platform/devdiv/serverless-paas-balam/serverless-paas-vikr/app-service-web-apps/app-service-team-documents/generalteamdocs/security/msiadoption/MSI-TokenCache-Resiliency
     static Task GetTokenUsingCurl()
     {
         Console.WriteLine($"\r\n=======  {nameof(GetTokenUsingCurl)}  =======");
