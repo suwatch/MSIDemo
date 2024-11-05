@@ -9,6 +9,7 @@ static partial class Program
     public const string ARMResourceUrl = "https://management.azure.com/";
     public const string StorageResourceUrl = "https://storage.azure.com/";
     public const string DatabaseResourceUrl = "https://database.windows.net/";
+    public const string AppServiceResourceUrl = "https://appservice.azure.com/";
     public const string SubscriptionId = "d2a4e313-c345-472f-b747-68f3b959349b";
     public const string TenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
     public const string StampName = "kudu1";

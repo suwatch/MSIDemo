@@ -21,6 +21,8 @@ static partial class Program
         client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token.Token);
         client.DefaultRequestHeaders.Add("x-ms-version", "2020-04-08");
 
+        Console.WriteLine($"HttpClient GET {storageUrl}");
+        Console.WriteLine($"Authorization: Bearer {token.Token.Substring(0, 10)}...");
         using var response = await client.GetAsync(storageUrl);
         var content = await response.Content.ReadAsStringAsync();
         Console.WriteLine(JObject.Parse(content));
@@ -41,6 +43,7 @@ static partial class Program
         var client = account.CreateCloudBlobClient();
         var container = client.GetContainerReference("config");
         var result = await container.ListBlobsSegmentedAsync(null);
+        Console.WriteLine($"{container.GetType().Name} ListBlobsSegmentedAsync");
         foreach (var blob in result.Results)
         {
             Console.WriteLine(blob.Uri);
@@ -54,7 +57,9 @@ static partial class Program
 
         var blobService = new BlobServiceClient(new Uri("https://kudu1.blob.core.windows.net"), credential);
         var container = blobService.GetBlobContainerClient("config");
-        await foreach(var blob in container.GetBlobsAsync())
+
+        Console.WriteLine($"{container.GetType().Name} GetBlobsAsync");
+        await foreach (var blob in container.GetBlobsAsync())
         {
             Console.WriteLine(blob.Name);
         }

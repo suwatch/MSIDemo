@@ -23,9 +23,13 @@ static partial class Program
     static Task GetTokenUsingCurl()
     {
         Console.WriteLine($"\r\n=======  {nameof(GetTokenUsingCurl)}  =======");
+
+        Console.WriteLine($"GetToken for MI '{mi_res_id}' to access {StorageResourceUrl}");
         var curlCmd1 = $"curl -v \"{tokenUri}\" -H \"Metadata: true\"";
         Console.WriteLine(curlCmd1);
+        Console.WriteLine();
 
+        Console.WriteLine($"GetToken for MI '{client_id}' to access {StorageResourceUrl}");
         var curlCmd2 = $"curl -v \"{tokenUriByClient}\" -H \"Metadata: true\"";
         Console.WriteLine(curlCmd2);
 
@@ -36,7 +40,10 @@ static partial class Program
     {
         Console.WriteLine($"\r\n=======  {nameof(GetTokenUsingHttpClient)}  =======");
         using var client = new HttpClient();
+        // XSS protection
         client.DefaultRequestHeaders.Add("Metadata", "true");
+
+        Console.WriteLine($"HttpClient GET {tokenUri}");
         using var response = await client.GetAsync(tokenUri);
         var content = await response.Content.ReadAsStringAsync();
         Console.WriteLine(JObject.Parse(content));
@@ -46,6 +53,8 @@ static partial class Program
     {
         Console.WriteLine($"\r\n=======  {nameof(GetTokenUsingAzureIdentity)}  =======");
         var credential = DefaultAzureCredentialHelper.GetDefaultAzureCredential(authorityHost: AzureAuthorityHosts.AzurePublicCloud.AbsoluteUri, managedIdentityResourceId: mi_res_id);
+
+        Console.WriteLine($"{credential.GetType().Name} GetTokenAsync(scopes: [{StorageResourceUrl}], tenantId: {TenantId})");
         var token = await credential.GetTokenAsync(new TokenRequestContext(scopes: [StorageResourceUrl], tenantId: TenantId));
         Console.WriteLine(JObject.Parse(JsonConvert.SerializeObject(token)));
     }
